@@ -17,7 +17,7 @@ const NavBar = () => {
   return (
     <nav className='flex space-x-6 border-b mb-5 px-5 h-14 items-center text-black text-lg'>
         <Link href="/"> <AiFillBug/> </Link>
-        {/* allows me to multiple labels w/o have multiple li components */}
+        {/* allows me to multiple labels w/o have multiple li components, cleaner code  */}
         <ul className='flex space-x-6'>
             {links.map(link => 
             <Link 
