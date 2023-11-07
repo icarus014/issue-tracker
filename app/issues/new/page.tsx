@@ -6,6 +6,8 @@ import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createIssueSchema } from "@/app/validationSchemas";
 
 interface IssueForm {
   title: string;
@@ -14,7 +16,10 @@ interface IssueForm {
 
 const NewIssuePage = () => {
   const router = useRouter();
-  const { register, control, handleSubmit } = useForm<IssueForm>();
+  const { register, control, handleSubmit } = useForm<IssueForm>({
+    // passing configuration object {}
+    resolver: zodResolver(createIssueSchema)
+  });
   const [error, setError] = useState("");
   // console.log(register('title'))
 
