@@ -11,6 +11,7 @@ import { createIssueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
 import { Text } from "@radix-ui/themes";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/spinner";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -26,6 +27,7 @@ const NewIssuePage = () => {
     resolver: zodResolver(createIssueSchema),
   });
   const [error, setError] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
   // console.log(register('title'))
 
   return (
@@ -39,9 +41,11 @@ const NewIssuePage = () => {
         // this returns  promise, which requires the use of "await" and "async"
         onSubmit={handleSubmit(async (data) => {
           try {
+            setSubmitting(true);
             await axios.post("/api/issues", data);
             router.push("/issues");
           } catch (error) {
+            setSubmitting(false);
             setError("An unexpected error has occurred");
           }
         })}
@@ -51,9 +55,7 @@ const NewIssuePage = () => {
           {/* using props for components  */}
         </TextField.Root>
 
-          <ErrorMessage>
-            {errors.title?.message}
-          </ErrorMessage>
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
 
         <Controller
           name="description"
@@ -62,12 +64,10 @@ const NewIssuePage = () => {
             <SimpleMDE placeholder="Description" {...field} />
           )}
         />
-
-          <ErrorMessage>
-            {errors.description?.message}
-          </ErrorMessage>
-
-        <Button>Submit new Issue</Button>
+        <ErrorMessage>{errors.description?.message}</ErrorMessage>
+        <Button disabled={isSubmitting}>
+          Submit New Issue{isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
